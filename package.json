@@ -1,0 +1,35 @@
+{
+  "name": "crypto_app",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiro1221/Crypto.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiro1221/Crypto/issues"
+  },
+  "homepage": "https://github.com/kiro1221/Crypto#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.9",
+    "prettierrc": "^0.0.0-5",
+    "request": "^2.88.2",
+    "validator": "^13.12.0"
+  }
+}

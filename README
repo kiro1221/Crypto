@@ -1,0 +1,70 @@
+
+### Core Features:
+1. **User Authentication**:
+   - Sign-up, login, logout, change-password✅
+   - Forgot password (email reset)
+   - Two-factor authentication (2FA) for enhanced security.
+
+2. **Crypto Dashboard**:
+   - Real-time price tracking for popular cryptocurrencies.
+   - Price charts with customizable time frames (1h, 24h, 7d, etc.).
+   - Portfolio overview showing holdings and their current value.
+
+3. **Search and Filter**:
+   - Search bar to look up cryptocurrencies.
+   - Filter options based on market cap, trading volume, or price range.
+
+4. **Portfolio Management**:
+   - Add or remove assets with custom amounts.
+   - Track profits/losses based on historical prices.
+
+5. **News and Updates**:
+   - Integration with a crypto news API to display the latest articles and trends.
+   - Push notifications for breaking news.
+
+### Advanced Features:
+6. **Trade Simulator**:
+   - Virtual trading platform to practice buying/selling crypto.
+   - Starting with a fictional balance.
+
+7. **API Integration**:
+   - Real-time data using APIs like CoinGecko or Binance.
+   - Historical data visualization.
+
+8. **Alerts and Notifications**:
+   - Set price alerts for specific cryptocurrencies.
+   - Notifications for price changes or news.
+
+9. **Dark Mode**:
+   - Toggle between light and dark themes for improved user experience.
+
+10. **Wallet Integration**:
+    - Connect with crypto wallets (e.g., MetaMask, Trust Wallet).
+    - Display wallet balances and transactions.
+
+### Stretch Goals:
+11. **Staking and Rewards**:
+    - Simulate staking features for users to earn rewards.
+    - Display APY (Annual Percentage Yield) for staked assets.
+
+12. **Multi-Language Support**:
+    - Allow users to select their preferred language.
+
+13. **Blockchain Explorer**:
+    - Search and view transaction details for different blockchains.
+
+14. **Crypto Converter**:
+    - Convert between cryptocurrencies and fiat currencies with live rates.
+
+15. **Community Forum/Chat**:
+    - Allow users to discuss cryptocurrencies and share tips.
+
+16. **Learn & Earn**:
+    - Add educational modules where users learn about crypto and earn virtual rewards.
+
+### Focused Practice Areas:
+- **Frontend**: Build interactive charts (using libraries like Chart.js), and responsive designs.
+- **Backend**: Handle APIs, database management for user data, and authentication.
+- **Full-Stack**: Build RESTful or GraphQL APIs to serve data to your frontend.
+
+Would you like a detailed walkthrough for any specific feature?
