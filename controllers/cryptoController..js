@@ -2,6 +2,9 @@ const express = require('express');
 const dotenv = require('dotenv').config();
 const router = express.Router();
 const axios = require('axios');
+const { checkUser } = require('../middleware/authMiddleware');
+const favoriteSchema = require('../Models/portfolio');
+const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
 
 router.get('/hello', async (req, res) => {
     try {
@@ -64,5 +67,34 @@ router.get('/search', async (req, res) => {
     }
 });
 //TODO: add to favorites
-
+router.post('/favorite', checkUser, async (req, res) => {
+    const { currency } = req.body;
+    const user = res.locals.user;
+    console.log(user);
+    if (!user) {
+        res.status(200).json({ status: 'Cant find user' });
+    }
+    try {
+        const favIndex = user.favorites.findIndex(
+            favCurrency => favCurrency.currency === currency
+        );
+        if (favIndex !== -1) {
+            user.favorites.splice(favIndex, 1);
+            await user.save();
+            return res.status(200).json({
+                status: user,
+                message: 'Currency removed from favorites'
+            });
+        } else {
+            user.favorites.push({ currency });
+            await user.save();
+            return res.status(200).json({
+                status: user,
+                message: 'Currency added to favorites'
+            });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 module.exports = router;

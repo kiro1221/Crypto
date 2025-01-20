@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Favorite = require('../Models/portfolio')
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
 
@@ -29,6 +30,11 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Please enter an email'],
             validate: [isEmail, 'Please enter a valid email']
         },
+        favorites: [
+            {
+                currency: { type: String, required: true }
+            }
+        ],
         createdAt: {
             type: Date,
             default: Date.now
