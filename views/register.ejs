@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/authstyle.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="opacity">Create an account!</h1>
+        <form action="/register" id="form" autocomplete="off">
+            <input type="text" name="username" id="username" placeholder="USERNAME" required />
+            <input type="text" name="email"  id="email" placeholder="EMAIL" required />
+            <input type="password" name="password"  id="password" placeholder="PASSWORD" required />
+            <input type="password" name="confirmPassword" id="confirmPassword"placeholder="CONFIRM PASSWORD" required />
+            <button class="opacity">SUBMIT</button>
+        </form>
+        <div class="register">
+            <a href="/render/login">Already have an account?</a>
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const form = document.getElementById('form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameValue = username.value;
+            const emailValue = email.value;
+            const passwordValue = password.value;
+            const confirmPasswordValue = confirmPassword.value;
+            if(passwordValue !== confirmPasswordValue){
+                alert("Passwords do not match");//TODO:change to a better UI
+                return;
+            }
+            try {
+                const res = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: usernameValue, email: emailValue, password: passwordValue }),
+                });
+                const result = await res.json();
+                console.log(result);
+            } catch (err) {
+                console.log("Error:", err);
+            }
+        });
+</script>

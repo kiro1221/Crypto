@@ -16,7 +16,7 @@ router.get('/hello', async (req, res) => {
 
 router.get('/latest', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 100;
     try {
         const response = await axios.get(
             `https://api.coinranking.com/v2/coins`,
@@ -33,9 +33,17 @@ router.get('/latest', async (req, res) => {
         const { coins } = response.data.data;
         const stats = response.data.data.stats.total;
         const totalPages = Math.ceil(stats / limit);
+        const coinDetails = coins.map(coin => ({
+            name: coin.name,
+            price: coin.price,
+            marketCap: coin.marketCap,
+            rank: coin.rank,
+            iconUrl: coin.iconUrl,
+            listedAt: coin.listedAt
+        }))
 
         res.status(200).json({
-            coins,
+            coins: coinDetails,
             pagination: {
                 currentPage: page,
                 totalPages,
@@ -66,7 +74,7 @@ router.get('/search', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-//TODO: add to favorites
+//TODO: add to favorites from api call above
 router.post('/favorite', checkUser, async (req, res) => {
     const { currency } = req.body;
     const user = res.locals.user;

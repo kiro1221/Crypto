@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/home.css">
+
+</head>
+
+<body>
+
+    <div class="container" id="cryptoContainer">
+        <div class="crypto" id="cryptoCard">
+            <div class="cryptoMenu">
+                <div></div>
+                <p class="cryptoMenuItem">Rank</p>
+                <img src="#">
+                <p class="cryptoMenuItem">Name</p>
+                <p class="cryptoMenuItem">Market Cap</p>
+                <p class="cryptoMenuItem">Price</p>
+                <p class="cryptoMenuItem">Listed at</p>
+            </div>
+            <div id="cryptoDataContainer">
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- <div class="logout">
+        <button id="logout" onclick="logout()">Logout</button>
+    </div> -->
+</body>
+
+</html>
+<script>
+    const logout = async () => {
+        try {
+            const response = await fetch('/authentication/logout', {
+                method: 'POST'
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const createResult = async (name, price, marketCap, rank, iconUrl, listedAt) => {
+        const cryptoDataContainer = document.getElementById("cryptoDataContainer")
+
+        const cryptoData = document.createElement('div')
+        cryptoData.className = 'cryptoData'
+
+        const favBtn = document.createElement('button')
+        favBtn.className = "favBtn"
+        favBtn.textContent = '⭐️'
+
+        const cryptoRank = document.createElement('p')
+        cryptoRank.className = "cryptoRank"
+        cryptoRank.textContent = rank
+
+        const cryptoIcon = document.createElement('img')
+        cryptoIcon.className = "cryptoImg"
+        cryptoIcon.src = iconUrl
+
+        const cryptoName = document.createElement('p')
+        cryptoName.className = "cryptoName"
+        cryptoName.textContent = name
+
+        const cryptoMarketCap = document.createElement('p')
+        cryptoMarketCap.className = "cryptoMarketCap"
+        cryptoMarketCap.textContent = marketCap
+
+        const cryptoPrice = document.createElement('p')
+        cryptoPrice.className = "cryptoPrice"
+        cryptoPrice.textContent = price
+
+        const listedAtPrice = document.createElement('p')
+        listedAtPrice.className = "cryptoVolume"
+        listedAtPrice.textContent = listedAt
+
+        cryptoData.appendChild(favBtn)
+        cryptoData.appendChild(cryptoRank)
+        cryptoData.appendChild(cryptoIcon)
+        cryptoData.appendChild(cryptoName)
+        cryptoData.appendChild(cryptoMarketCap)
+        cryptoData.appendChild(cryptoPrice)
+        cryptoData.appendChild(listedAtPrice)
+        cryptoDataContainer.appendChild(cryptoData)
+    }
+    function formatCurrency(value) {
+        const number = parseFloat(value);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+
+    const getLatest = async () => {
+        try {
+            const response = await fetch('/crypto/latest', {
+                method: 'GET'
+            })
+            const data = await response.json()
+            // const names = []
+            data.coins.forEach((element) => {
+                const name = element.name
+                const price = element.price
+                const marketCap = element.marketCap
+                const rank = element.rank
+                const iconUrl = element.iconUrl
+                const listedAt = element.listedAt
+
+                const formattedCurrency = formatCurrency(price)
+
+                createResult(name, formattedCurrency, marketCap, rank, iconUrl, listedAt)
+            });
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    getLatest()
+</script>

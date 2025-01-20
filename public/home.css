@@ -1,0 +1,83 @@
+body {
+    background: linear-gradient(145deg, #f6f8fd 0%, #eef2ff 100%);
+    min-height: 100vh;
+    margin: 0;
+}
+.cryptoImg{
+    width: 22px;
+    height: 22px;
+    margin-left: 5px;
+}
+img{
+    width: 20px;
+    height: 20px;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.crypto {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.cryptoMenu,
+.cryptoData {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0fr 1fr 1.3fr 1fr 1.5fr;
+    gap: 16px;
+    padding: 16px 24px;
+    align-items: center;
+}
+
+.cryptoMenu {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cryptoMenuItem {
+    font-weight: 600;
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+.cryptoData {
+    transition: background-color 0.2s;
+}
+
+.cryptoData:hover {
+    background-color: #f8fafc;
+}
+
+.cryptoData p {
+    margin: 0;
+    font-size: 18px;
+}
+
+.cryptoName {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+
+.favBtn {
+    border: none;
+    background-color: transparent;
+}
+.cryptoRank {
+    color: #64748b;
+}
+
+.cryptoMarketCap,
+.cryptoPrice,
+.cryptoVolume {
+    font-family: monospace;
+    color: #334155;
+}

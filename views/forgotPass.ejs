@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who to follow</title>
+    <link rel="stylesheet" href="/authstyle.css">
+
+    <style>
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="opacity">Reset password</h1>
+
+        <form id="passwordChangeForm">
+            <input type="password" id="newPassword" placeholder="New Password" required>
+            <input type="password" id="confNewPassword" placeholder="Confirm New Password" required>
+            <button type="submit">Reset Password</button>
+        </form>
+    </div>
+    <script>//TODO:send by email only
+        const newPasswordInput = document.getElementById('newPassword');
+        const confNewPasswordInput = document.getElementById('confNewPassword');
+        const form = document.getElementById('passwordChangeForm');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();  
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confNewPasswordInput.value;
+
+            try {
+                // Send a POST request to change the password
+                const res = await fetch('/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword, confirmPassword,token }),
+                });
+                const result = await res.json();
+                console.log(result);
+            } catch (err) {
+                console.log("Error:", err); 
+            }
+        });
+    </script>
+</body>
+</html>

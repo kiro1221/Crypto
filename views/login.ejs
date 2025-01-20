@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/authstyle.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="opacity">Login</h1>
+        <form action="/auth/login" id="form" autocomplete="off">
+            <input type="text" name="username"  id="username" placeholder="USERNAME" required />
+            <input type="password" name="password"  id="password" placeholder="PASSWORD" required />
+            <a href="/render/forgotPassword" class="forgotPass" target="_blank">Forgot password?</a><br>
+            <button class="opacity">SUBMIT</button>
+        </form>
+        <div class="register">
+            <a href="/render/register">Don't have an account?</a>
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        const form = document.getElementById('form');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameValue = username.value;
+            const passwordValue = password.value;
+            try {
+                const res = await fetch('/authentication/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: usernameValue, password: passwordValue }),
+                });
+                const result = await res.json();
+                console.log(result);
+                if (result.user) {
+                    location.assign('/render/');
+                }
+            } catch (err) {
+                console.log("Error:", err);
+            }
+        });
+</script>
