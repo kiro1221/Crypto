@@ -51,7 +51,7 @@ const sparkLine =  (sparkline,timePeriod) => {
 
 router.get('/latest', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 2;
+    const limit = parseInt(req.query.limit) || 50;
     const timePeriod = '1h';
     try {
         const response = await axios.get(
@@ -75,6 +75,7 @@ router.get('/latest', async (req, res) => {
             marketCap: coin.marketCap,
             rank: coin.rank,
             iconUrl: coin.iconUrl,
+            symbol: coin.symbol,
             //sparkLine: coin.sparkline,
             trend1h: sparkLine(coin.sparkline,'1h'),
             trend24h: sparkLine(coin.sparkline,'24h'),

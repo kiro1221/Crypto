@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -14,7 +15,7 @@
             <div class="cryptoMenu">
                 <div></div>
                 <p class="cryptoMenuItem">Rank</p>
-                <img src="#">
+                <i></i>
                 <p class="cryptoMenuItem">Name</p>
                 <p class="cryptoMenuItem">Market Cap</p>
                 <p class="cryptoMenuItem">Price</p>
@@ -44,15 +45,15 @@
             console.log(err)
         }
     }
-    const createResult = async (name, price, marketCap, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear) => {
+    const createResult = async (name, price, marketCap, symbol, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear) => {
         const cryptoDataContainer = document.getElementById("cryptoDataContainer")
 
         const cryptoData = document.createElement('div')
         cryptoData.className = 'cryptoData'
 
-        const favBtn = document.createElement('button')
-        favBtn.className = "favBtn"
-        favBtn.textContent = '⭐️'
+        const favBtn = document.createElement('i')
+        favBtn.className = "fa-regular fa-star"
+        favBtn.addEventListener("click", toggleFav)
 
         const cryptoRank = document.createElement('p')
         cryptoRank.className = "cryptoRank"
@@ -65,6 +66,10 @@
         const cryptoName = document.createElement('p')
         cryptoName.className = "cryptoName"
         cryptoName.textContent = name
+
+        const symbolSpan = document.createElement('span')
+        symbolSpan.className = "symbol"
+        symbolSpan.textContent = symbol
 
         const cryptoMarketCap = document.createElement('p')
         cryptoMarketCap.className = "cryptoMarketCap"
@@ -90,6 +95,7 @@
         OneYear.className = "year"
         OneYear.textContent = trendYear
 
+        cryptoName.appendChild(symbolSpan)
         cryptoData.appendChild(favBtn)
         cryptoData.appendChild(cryptoRank)
         cryptoData.appendChild(cryptoIcon)
@@ -102,6 +108,9 @@
         cryptoData.appendChild(OneYear)
 
         cryptoDataContainer.appendChild(cryptoData)
+    }
+    const toggleFav = () => {
+        console.log("added/removed from fav")
     }
     const formatCurrency = (value) => {// for price
         const number = parseFloat(value);
@@ -134,10 +143,10 @@
                 const trendDay = element.trend24h
                 const trendWeek = element.trend7d
                 const trendYear = element.trend1y
-
+                const symbol = element.symbol
                 const formattedCurrency = formatCurrency(price)
                 const marketCapFormat = formatMarketCap(marketCap)
-                createResult(name, formattedCurrency, marketCapFormat, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear)
+                createResult(name, formattedCurrency, marketCapFormat, symbol, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear)
             });
         } catch (err) {
             console.log(err)
