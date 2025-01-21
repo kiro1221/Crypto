@@ -6,17 +6,53 @@ const { checkUser } = require('../middleware/authMiddleware');
 const favoriteSchema = require('../Models/portfolio');
 const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
 
-router.get('/hello', async (req, res) => {
+// const sparkline = [
+//     34250.5,
+//     34300.2,
+//     34400.1,
+//     34350.3,
+//     34200.6,
+//     34100.8,
+//     34280.7,
+//     34450.9,
+//     34320.4,
+//     34210.3
+// ];
+// const timePeriod = '1h';
+
+const sparkLine =  (sparkline,timePeriod) => {
+    //sparkline = [];
     try {
-        res.status(200).json({ message: 'Hello world!' });
-    } catch (err) {
-        res.status(400).json({ error: 'failed to fetch' });
+        // const response = await axios.get(
+        //     `https://api.coinranking.com/v2/coins?timePeriod=${timePeriod}`,
+        //     {
+        //         headers: {
+        //             'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
+        //         }
+        //     }
+        // );
+
+        //const sparkLine = response.data.data.coins[0].sparkline;
+        const startPrice = sparkline[0];
+        const lastPrice = sparkline[sparkline.length - 2];
+        // const startPrice = '94890.3929713267';
+        // const lastPrice = '107864.81746433847'
+        console.log(sparkLine);
+        console.log(startPrice);
+        console.log(lastPrice);
+
+        const trend = ((lastPrice - startPrice) / startPrice) * 100;
+        console.log(trend.toFixed(2));
+        return trend.toFixed(2);
+    } catch (error) {
+        console.log(error);
     }
-});
+};
 
 router.get('/latest', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 100;
+    const limit = parseInt(req.query.limit) || 2;
+    const timePeriod = '1h';
     try {
         const response = await axios.get(
             `https://api.coinranking.com/v2/coins`,
@@ -39,11 +75,19 @@ router.get('/latest', async (req, res) => {
             marketCap: coin.marketCap,
             rank: coin.rank,
             iconUrl: coin.iconUrl,
-            listedAt: coin.listedAt
-        }))
+            //sparkLine: coin.sparkline,
+            trend1h: sparkLine(coin.sparkline,'1h'),
+            trend24h: sparkLine(coin.sparkline,'24h'),
+            trend7d: sparkLine(coin.sparkline,'7d'),
+            trend1y: sparkLine(coin.sparkline,'1y')
+        }));
+        // const sparkline = coins[0].sparkline;
+        // console.log(sparkline)
+        // //const trend = sparkLine(sparkline, timePeriod);
 
         res.status(200).json({
             coins: coinDetails,
+            //trend,
             pagination: {
                 currentPage: page,
                 totalPages,

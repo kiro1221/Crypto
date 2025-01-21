@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/home.css">
-
 </head>
 
 <body>
-
     <div class="container" id="cryptoContainer">
         <div class="crypto" id="cryptoCard">
             <div class="cryptoMenu">
@@ -20,15 +18,16 @@
                 <p class="cryptoMenuItem">Name</p>
                 <p class="cryptoMenuItem">Market Cap</p>
                 <p class="cryptoMenuItem">Price</p>
-                <p class="cryptoMenuItem">Listed at</p>
+                <p class="cryptoMenuItem">1h</p>
+                <p class="cryptoMenuItem">24h</p>
+                <p class="cryptoMenuItem">7d</p>
+                <p class="cryptoMenuItem">1y</p>
+
             </div>
             <div id="cryptoDataContainer">
             </div>
-
         </div>
     </div>
-
-
     <!-- <div class="logout">
         <button id="logout" onclick="logout()">Logout</button>
     </div> -->
@@ -45,7 +44,7 @@
             console.log(err)
         }
     }
-    const createResult = async (name, price, marketCap, rank, iconUrl, listedAt) => {
+    const createResult = async (name, price, marketCap, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear) => {
         const cryptoDataContainer = document.getElementById("cryptoDataContainer")
 
         const cryptoData = document.createElement('div')
@@ -75,9 +74,21 @@
         cryptoPrice.className = "cryptoPrice"
         cryptoPrice.textContent = price
 
-        const listedAtPrice = document.createElement('p')
-        listedAtPrice.className = "cryptoVolume"
-        listedAtPrice.textContent = listedAt
+        const oneH = document.createElement('p')
+        oneH.className = "oneHour"
+        oneH.textContent = trend1h
+
+        const oneDay = document.createElement('p')
+        oneDay.className = "day"
+        oneDay.textContent = trendDay
+
+        const oneWeek = document.createElement('p')
+        oneWeek.className = "week"
+        oneWeek.textContent = trendWeek
+
+        const OneYear = document.createElement('p')
+        OneYear.className = "year"
+        OneYear.textContent = trendYear
 
         cryptoData.appendChild(favBtn)
         cryptoData.appendChild(cryptoRank)
@@ -85,17 +96,27 @@
         cryptoData.appendChild(cryptoName)
         cryptoData.appendChild(cryptoMarketCap)
         cryptoData.appendChild(cryptoPrice)
-        cryptoData.appendChild(listedAtPrice)
+        cryptoData.appendChild(oneH)
+        cryptoData.appendChild(oneDay)
+        cryptoData.appendChild(oneWeek)
+        cryptoData.appendChild(OneYear)
+
         cryptoDataContainer.appendChild(cryptoData)
     }
-    function formatCurrency(value) {
+    const formatCurrency = (value) => {// for price
         const number = parseFloat(value);
         if (isNaN(number)) {
             return "Invalid input";
         }
         return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     }
-
+    const formatMarketCap = (marketCap) => {
+        const number = parseFloat(marketCap);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+    }
     const getLatest = async () => {
         try {
             const response = await fetch('/crypto/latest', {
@@ -109,11 +130,14 @@
                 const marketCap = element.marketCap
                 const rank = element.rank
                 const iconUrl = element.iconUrl
-                const listedAt = element.listedAt
+                const trend1h = element.trend1h
+                const trendDay = element.trend24h
+                const trendWeek = element.trend7d
+                const trendYear = element.trend1y
 
                 const formattedCurrency = formatCurrency(price)
-
-                createResult(name, formattedCurrency, marketCap, rank, iconUrl, listedAt)
+                const marketCapFormat = formatMarketCap(marketCap)
+                createResult(name, formattedCurrency, marketCapFormat, rank, iconUrl, trend1h, trendDay, trendWeek, trendYear)
             });
         } catch (err) {
             console.log(err)
