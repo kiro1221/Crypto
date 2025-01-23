@@ -1,3 +1,7 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 body {
     background: linear-gradient(145deg, #f6f8fd 0%, #eef2ff 100%);
     min-height: 100vh;
@@ -31,8 +35,8 @@ img {
 .cryptoMenu,
 .cryptoData {
     display: grid;
-    grid-template-columns: 0.1fr 0.2fr 0fr 0.7fr 0.7fr 0.5fr 0.2fr 0.2fr 0.2fr 0.2fr;
-    gap: 16px;
+    grid-template-columns: 0.1fr 0.2fr 0fr 0.5fr 0.5fr 0.4fr 0.2fr 0.2fr 0.2fr 0.2fr;
+    gap: 17px;
     padding: 16px 24px;
     align-items: center;
 }
@@ -68,7 +72,12 @@ img {
     gap: 8px;
     font-weight: 500;
 }
-
+#price {
+    margin-left: 13px;
+}
+#nameCrypto {
+    margin-left: 15px;
+}
 .favBtn {
     border: none;
     background-color: transparent;

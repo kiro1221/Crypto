@@ -20,7 +20,7 @@ const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
 // ];
 // const timePeriod = '1h';
 
-const sparkLine =  (sparkline,timePeriod) => {
+const sparkLine = (sparkline, timePeriod) => {
     //sparkline = [];
     try {
         // const response = await axios.get(
@@ -51,7 +51,7 @@ const sparkLine =  (sparkline,timePeriod) => {
 
 router.get('/latest', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 50;
+    const limit = parseInt(req.query.limit) || 10;
     const timePeriod = '1h';
     try {
         const response = await axios.get(
@@ -77,10 +77,10 @@ router.get('/latest', async (req, res) => {
             iconUrl: coin.iconUrl,
             symbol: coin.symbol,
             //sparkLine: coin.sparkline,
-            trend1h: sparkLine(coin.sparkline,'1h'),
-            trend24h: sparkLine(coin.sparkline,'24h'),
-            trend7d: sparkLine(coin.sparkline,'7d'),
-            trend1y: sparkLine(coin.sparkline,'1y')
+            trend1h: sparkLine(coin.sparkline, '1h'),
+            trend24h: sparkLine(coin.sparkline, '24h'),
+            trend7d: sparkLine(coin.sparkline, '7d'),
+            trend1y: sparkLine(coin.sparkline, '1y')
         }));
         // const sparkline = coins[0].sparkline;
         // console.log(sparkline)
@@ -145,6 +145,23 @@ router.post('/favorite', checkUser, async (req, res) => {
                 status: user,
                 message: 'Currency added to favorites'
             });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+router.get('/getFavorite', checkUser, async (req, res) => {
+    const user = res.locals.user;
+    if (!user) {
+        res.status(200).json({ status: 'Cant find user' });
+    }
+    try {
+        if (user.favorites.length === 0) {
+            res.status(400).json({ message: 'No favorite currency yet' });
+        }else{
+            const query = user.favorites
+            res.status(201).json({ user: user.favorites });
+
         }
     } catch (error) {
         res.status(400).json({ message: error.message });

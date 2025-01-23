@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container" id="cryptoContainer">
+        <div class="crypto" id="cryptoCard">
+            <div class="cryptoMenu">
+                <div></div>
+                <p class="cryptoMenuItem">Rank</p>
+                <i></i>
+                <p class="cryptoMenuItem">Name</p>
+                <p class="cryptoMenuItem" id="nameCrypto">Market Cap</p>
+                <p class="cryptoMenuItem" id="price">Price</p>
+                <p class="cryptoMenuItem">1h</p>
+                <p class="cryptoMenuItem">24h</p>
+                <p class="cryptoMenuItem">7d</p>
+                <p class="cryptoMenuItem">1y</p>
+
+            </div>
+            <div id="cryptoDataContainer">
+                <div id="cryptoData" class="cryptoData"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    const cryptoDataContainer = document.getElementById("cryptoDataContainer")
+    const cryptoData = document.getElementById("cryptoData")
+
+    const createResult = async (name, price, marketCap, symbol, rank, iconUrl) => {
+        const favBtn = document.createElement('i')
+        favBtn.className = "fa-regular fa-star"
+        favBtn.addEventListener("click", () => toggleFav(name));
+
+        const cryptoRank = document.createElement('p')
+        cryptoRank.className = "cryptoRank"
+        cryptoRank.textContent = rank
+
+        const cryptoIcon = document.createElement('img')
+        cryptoIcon.className = "cryptoImg"
+        cryptoIcon.src = iconUrl
+
+        const cryptoName = document.createElement('p')
+        cryptoName.className = "cryptoName"
+        cryptoName.textContent = name
+
+        const symbolSpan = document.createElement('span')
+        symbolSpan.className = "symbol"
+        symbolSpan.textContent = symbol
+
+        const cryptoMarketCap = document.createElement('p')
+        cryptoMarketCap.className = "cryptoMarketCap"
+        cryptoMarketCap.textContent = marketCap
+
+        const cryptoPrice = document.createElement('p')
+        cryptoPrice.className = "cryptoPrice"
+        cryptoPrice.textContent = price
+
+        cryptoName.appendChild(symbolSpan)
+        cryptoData.appendChild(favBtn)
+        cryptoData.appendChild(cryptoRank)
+        cryptoData.appendChild(cryptoIcon)
+        cryptoData.appendChild(cryptoName)
+        cryptoData.appendChild(cryptoMarketCap)
+        cryptoData.appendChild(cryptoPrice)
+        cryptoDataContainer.appendChild(cryptoData)
+    }
+
+    const createTrend = async (trend1h, trendDay, trendWeek, trendYear) => {
+        const oneH = document.createElement('p')
+        oneH.className = "oneHour"
+        oneH.textContent = trend1h
+
+        const oneDay = document.createElement('p')
+        oneDay.className = "day"
+        oneDay.textContent = trendDay
+
+        const oneWeek = document.createElement('p')
+        oneWeek.className = "week"
+        oneWeek.textContent = trendWeek
+
+        const OneYear = document.createElement('p')
+        OneYear.className = "year"
+        OneYear.textContent = trendYear
+
+        cryptoData.appendChild(oneH)
+        cryptoData.appendChild(oneDay)
+        cryptoData.appendChild(oneWeek)
+        cryptoData.appendChild(OneYear)
+        cryptoDataContainer.appendChild(cryptoData)
+
+    }
+
+    const formatCurrency = (value) => {// for price
+        const number = parseFloat(value);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+    const formatMarketCap = (marketCap) => {
+        const number = parseFloat(marketCap);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+    }
+
+    const toggleFav = async (name) => {
+        console.log(name)
+        try {
+            const res = await fetch('/crypto/favorite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currency: name }),
+            })
+            const result = await res.json();
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getLatest = async () => {
+        try {
+            const response = await fetch('/crypto/latest', {
+                method: 'GET'
+            })
+            const data = await response.json()
+            // const names = []
+            data.coins.forEach((element) => {
+                const name = element.name
+                const price = element.price
+                const marketCap = element.marketCap
+                const rank = element.rank
+                const iconUrl = element.iconUrl
+                const trend1h = element.trend1h
+                const trendDay = element.trend24h//TODO: just pass from backend
+                const trendWeek = element.trend7d//TODO: just pass from backend
+                const trendYear = element.trend1y//TODO: just pass from backend 
+                const symbol = element.symbol
+                const formattedCurrency = formatCurrency(price)
+                const marketCapFormat = formatMarketCap(marketCap)
+                createResult(name, formattedCurrency, marketCapFormat, symbol, rank, iconUrl)
+                createTrend(trend1h, trendDay, trendWeek, trendYear)
+            });
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    const getFavorites = async () => {//TODO: SAME CONCEPT AS GET LATEST WITH CREATE RESULT
+        try {
+            const response = await fetch('/crypto/getFavorite', {
+                method: 'GET'
+            })
+            const data = await response.json()
+            data.user.forEach((currency) =>{
+                console.log(currency.currency)
+                
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    getLatest()
+    getFavorites()
+</script>
