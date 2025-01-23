@@ -37,12 +37,12 @@ const sparkLine = (sparkline, timePeriod) => {
         const lastPrice = sparkline[sparkline.length - 2];
         // const startPrice = '94890.3929713267';
         // const lastPrice = '107864.81746433847'
-        console.log(sparkLine);
-        console.log(startPrice);
-        console.log(lastPrice);
+        // console.log(sparkLine);
+        // console.log(startPrice);
+        // console.log(lastPrice);
 
         const trend = ((lastPrice - startPrice) / startPrice) * 100;
-        console.log(trend.toFixed(2));
+        // console.log(trend.toFixed(2));
         return trend.toFixed(2);
     } catch (error) {
         console.log(error);
@@ -150,6 +150,7 @@ router.post('/favorite', checkUser, async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
 router.get('/getFavorite', checkUser, async (req, res) => {
     const user = res.locals.user;
     if (!user) {
@@ -158,13 +159,50 @@ router.get('/getFavorite', checkUser, async (req, res) => {
     try {
         if (user.favorites.length === 0) {
             res.status(400).json({ message: 'No favorite currency yet' });
-        }else{
-            const query = user.favorites
-            res.status(201).json({ user: user.favorites });
+        } else {
+            const favoritesDetails = await Promise.all(
+                user.favorites.map(element => getFavorite(element))
+            );
+            const validFavorites = favoritesDetails.filter(
+                details => details !== null
+            );
 
+            res.status(201).json({ user: validFavorites });
         }
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
+const getFavorite = async element => {
+    console.log(element.currency);
+    try {
+        const response = await axios.get(
+            `https://api.coinranking.com/v2/coins?search=${element.currency}`,
+            {
+                headers: {
+                    'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
+                }
+            }
+        );
+        const firstSuggestion = response.data.data.coins[0];
+        //console.log(firstSuggestion);
+        const coinDetails = [firstSuggestion].map(coin => ({
+            name: coin.name,
+            price: coin.price,
+            marketCap: coin.marketCap,
+            rank: coin.rank,
+            iconUrl: coin.iconUrl,
+            symbol: coin.symbol,
+            //sparkLine: coin.sparkline,
+            trend1h: sparkLine(coin.sparkline, '1h'),
+            trend24h: sparkLine(coin.sparkline, '24h'),
+            trend7d: sparkLine(coin.sparkline, '7d'),
+            trend1y: sparkLine(coin.sparkline, '1y')
+        }));
+        // console.log(coinDetails);
+        return coinDetails;
+    } catch (error) {
+        console.log(error);
+    }
+};
 module.exports = router;

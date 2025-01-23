@@ -136,6 +136,7 @@
                 method: 'GET'
             })
             const data = await response.json()
+            console.log(data)
             // const names = []
             data.coins.forEach((element) => {
                 const name = element.name
@@ -157,20 +158,35 @@
             console.log(err)
         }
     }
-    const getFavorites = async () => {//TODO: SAME CONCEPT AS GET LATEST WITH CREATE RESULT
+    const getFavorites = async () => {
         try {
             const response = await fetch('/crypto/getFavorite', {
                 method: 'GET'
             })
             const data = await response.json()
-            data.user.forEach((currency) =>{
-                console.log(currency.currency)
-                
-            })
+
+            data.user.forEach((coins, index) => {
+                coins.forEach((coin) => {
+                    const name = coin.name
+                    const price = coin.price
+                    const marketCap = coin.marketCap
+                    const rank = coin.rank
+                    const iconUrl = coin.iconUrl
+                    const trend1h = coin.trend1h
+                    const trendDay = coin.trend24h//TODO: just pass from backend
+                    const trendWeek = coin.trend7d//TODO: just pass from backend
+                    const trendYear = coin.trend1y//TODO: just pass from backend 
+                    const symbol = coin.symbol
+                    const formattedCurrency = formatCurrency(price)
+                    const marketCapFormat = formatMarketCap(marketCap)
+                    createResult(name, formattedCurrency, marketCapFormat, symbol, rank, iconUrl)
+                    createTrend(trend1h, trendDay, trendWeek, trendYear)
+                });
+            });
         } catch (error) {
             console.log(error)
         }
     }
-    getLatest()
-    getFavorites()
+    //getLatest()
+    //getFavorites()
 </script>
