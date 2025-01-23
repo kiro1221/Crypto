@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li class="marketcap" onclick="setActivePage('marketcap')">
+                Market Cap
+                <span id="marketCapAll"></span>
+            </li>
+            <li class="portfolio" onclick="setActivePage('portfolio')">Portfolio</li>
+            <li class="favorite" onclick="setActivePage('favorite')">Favorite</li>
+            <li class="profile" onclick="setActivePage('profile')">Profile</li>
+            <li class="settings" onclick="setActivePage('settings')">Settings</li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
+<script>
+    const getMarketCap = async () => {
+        let marketCapAll = document.getElementById("marketCapAll")
+        try {
+            const response = await fetch('/crypto/marketCap', {
+                method: 'GET'
+            })
+            const data = await response.json()
+            const marketCap = data.marketCap
+            const formatMarketCap = formatCurrency(marketCap)
+            marketCapAll.textContent = formatMarketCap
+            return marketCap
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+</script>

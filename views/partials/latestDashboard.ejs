@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <div class="container" id="cryptoContainer">
         <div class="crypto" id="cryptoCard">
             <div class="cryptoMenu">
@@ -101,20 +102,7 @@
 
     }
 
-    const formatCurrency = (value) => {// for price
-        const number = parseFloat(value);
-        if (isNaN(number)) {
-            return "Invalid input";
-        }
-        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    }
-    const formatMarketCap = (marketCap) => {
-        const number = parseFloat(marketCap);
-        if (isNaN(number)) {
-            return "Invalid input";
-        }
-        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-    }
+
 
     const toggleFav = async (name) => {
         console.log(name)
@@ -179,6 +167,7 @@
                     const symbol = coin.symbol
                     const formattedCurrency = formatCurrency(price)
                     const marketCapFormat = formatMarketCap(marketCap)
+
                     createResult(name, formattedCurrency, marketCapFormat, symbol, rank, iconUrl)
                     createTrend(trend1h, trendDay, trendWeek, trendYear)
                 });
@@ -187,6 +176,11 @@
             console.log(error)
         }
     }
-    //getLatest()
+    const reset = () => {
+        cryptoData.textContent = ""
+    }
+    window.onload = () => {
+        getLatest()
+    };    //getLatest()
     //getFavorites()
 </script>

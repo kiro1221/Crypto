@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script>
+    const formatCurrency = (value) => {// for price
+        const number = parseFloat(value);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+    const formatMarketCap = (marketCap) => {
+        const number = parseFloat(marketCap);
+        if (isNaN(number)) {
+            return "Invalid input";
+        }
+        return number.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+    }
+</script>

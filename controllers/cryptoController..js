@@ -99,7 +99,24 @@ router.get('/latest', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-
+router.get('/marketCap', async (req, res) => {
+    try {
+        const response = await axios.get(
+            `https://api.coingecko.com/api/v3/global`,
+            {
+                headers: {
+                    'X-CMC_PRO_API_KEY': process.env.GECKO_API
+                }
+            }
+        );
+        const marketCap = response.data.data.total_market_cap.usd;
+        res.status(200).json({
+            marketCap
+        });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
 router.get('/search', async (req, res) => {
     const { searchResult } = req.body;
     try {

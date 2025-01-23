@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="/menu.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
@@ -14,12 +17,25 @@
     <!-- <div class="logout">
         <button id="logout" onclick="logout()">Logout</button>
     </div> -->
+    <%- include('partials/menu.ejs'); -%>
+    <%- include('partials/formatCurrency.ejs'); -%>
     <%- include('partials/latestDashboard.ejs'); -%>
 </body>
-
 </html>
 <script>
-
+    const setActivePage = (element) => {
+        if (element === "marketcap") {
+            reset()
+            getLatest()
+        } else if (element === "favorite") {
+            reset()
+            getFavorites()
+        }
+    }
+    const setMarketCap = async () => {
+        const marketCap = await getMarketCap()
+    }
+    setMarketCap()
     const logout = async () => {
         try {
             const response = await fetch('/authentication/logout', {
@@ -29,6 +45,4 @@
             console.log(err)
         }
     }
-
-
 </script>
