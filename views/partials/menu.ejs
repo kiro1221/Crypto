@@ -16,8 +16,16 @@
             </li>
             <li class="portfolio" onclick="setActivePage('portfolio')">Portfolio</li>
             <li class="favorite" onclick="setActivePage('favorite')">Favorite</li>
-            <li class="profile" onclick="setActivePage('profile')">Profile</li>
-            <li class="settings" onclick="setActivePage('settings')">Settings</li>
+            <li class="trade" onclick="setActivePage('trade')">Trade</li>
+            <li class="settings" onmouseover="showHoverMenu()" onmouseout="hideHoverMenu()">
+                Settings
+                <div class="hoverMenu">
+                    <a href="#">Theme</a>
+                    <a href="#">Currency</a>
+                    <a href="#">Change password</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </li>
         </ul>
     </div>
 
@@ -25,6 +33,16 @@
 
 </html>
 <script>
+    function showHoverMenu() {
+        const hoverMenu = document.querySelector('.settings .hoverMenu');
+        hoverMenu.style.display = 'block';
+    }
+
+    function hideHoverMenu() {
+        const hoverMenu = document.querySelector('.settings .hoverMenu');
+        hoverMenu.style.display = 'none';
+    }
+
     const getMarketCap = async () => {
         let marketCapAll = document.getElementById("marketCapAll")
         try {

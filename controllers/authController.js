@@ -74,7 +74,9 @@ router.get('/user', checkUser, async (req, res) => {
         res.status(200).json(user);
     } catch (err) {
         console.error('Error in user route:', err.message);
-        const errors = handleErrors(err) || { message: 'Unexpected error occurred' };
+        const errors = handleErrors(err) || {
+            message: 'Unexpected error occurred'
+        };
         res.status(400).json({ errors });
     }
 });
@@ -87,7 +89,6 @@ router.post('/change-password', checkUser, async (req, res) => {
         });
     }
     try {
-
         const user = res.locals.user;
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

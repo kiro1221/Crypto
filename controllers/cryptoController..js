@@ -5,60 +5,39 @@ const axios = require('axios');
 const { checkUser } = require('../middleware/authMiddleware');
 const favoriteSchema = require('../Models/portfolio');
 const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
+var fx = require("money");
 
-// const sparkline = [
-//     34250.5,
-//     34300.2,
-//     34400.1,
-//     34350.3,
-//     34200.6,
-//     34100.8,
-//     34280.7,
-//     34450.9,
-//     34320.4,
-//     34210.3
-// ];
-// const timePeriod = '1h';
+const sparkLine = async(currency, timePeriod) => {
 
-const sparkLine = (sparkline, timePeriod) => {
-    //sparkline = [];
     try {
-        // const response = await axios.get(
-        //     `https://api.coinranking.com/v2/coins?timePeriod=${timePeriod}`,
-        //     {
-        //         headers: {
-        //             'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
-        //         }
-        //     }
-        // );
-
-        //const sparkLine = response.data.data.coins[0].sparkline;
-        const startPrice = sparkline[0];
-        const lastPrice = sparkline[sparkline.length - 2];
-        // const startPrice = '94890.3929713267';
-        // const lastPrice = '107864.81746433847'
-        // console.log(sparkLine);
-        // console.log(startPrice);
-        // console.log(lastPrice);
-
+        const response = await axios.get(
+            `https://api.coinranking.com/v2/coins?search=${currency}&timePeriod=${timePeriod}`,
+            {
+                headers: {
+                    'x-access-token': process.env.CRYPTO_API
+                }
+            }
+        );
+        const sparkLine = await response.data.data.coins[0].sparkline
+        
+        const startPrice = sparkLine[0];
+        const lastPrice = sparkLine[sparkLine.length - 2];
         const trend = ((lastPrice - startPrice) / startPrice) * 100;
-        // console.log(trend.toFixed(2));
-        return trend.toFixed(2);
+        return trend.toFixed(2)
     } catch (error) {
-        console.log(error);
-    }
+console.log(error)    }
 };
 
 router.get('/latest', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const timePeriod = '1h';
+
     try {
         const response = await axios.get(
             `https://api.coinranking.com/v2/coins`,
             {
                 headers: {
-                    'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
+                    'x-access-token': process.env.CRYPTO_API
                 },
                 params: {
                     limit,
@@ -66,29 +45,27 @@ router.get('/latest', async (req, res) => {
                 }
             }
         );
+
         const { coins } = response.data.data;
         const stats = response.data.data.stats.total;
         const totalPages = Math.ceil(stats / limit);
-        const coinDetails = coins.map(coin => ({
-            name: coin.name,
-            price: coin.price,
-            marketCap: coin.marketCap,
-            rank: coin.rank,
-            iconUrl: coin.iconUrl,
-            symbol: coin.symbol,
-            //sparkLine: coin.sparkline,
-            trend1h: sparkLine(coin.sparkline, '1h'),
-            trend24h: sparkLine(coin.sparkline, '24h'),
-            trend7d: sparkLine(coin.sparkline, '7d'),
-            trend1y: sparkLine(coin.sparkline, '1y')
-        }));
-        // const sparkline = coins[0].sparkline;
-        // console.log(sparkline)
-        // //const trend = sparkLine(sparkline, timePeriod);
+
+        const coinDetails = await Promise.all(
+            coins.map(async (coin) => ({
+                name: coin.name,
+                price: coin.price,
+                marketCap: coin.marketCap,
+                rank: coin.rank,
+                iconUrl: coin.iconUrl,
+                symbol: coin.symbol,
+                trend1h: await sparkLine(coin.name, '1h'),
+                trend24h: await sparkLine(coin.name, '24h'),
+                trend7d: await sparkLine(coin.name, '7d'),
+            }))
+        );
 
         res.status(200).json({
             coins: coinDetails,
-            //trend,
             pagination: {
                 currentPage: page,
                 totalPages,
@@ -96,16 +73,18 @@ router.get('/latest', async (req, res) => {
             }
         });
     } catch (error) {
+        console.error("Error fetching latest coins:", error);
         res.status(400).json({ message: error.message });
     }
 });
+
 router.get('/marketCap', async (req, res) => {
     try {
         const response = await axios.get(
             `https://api.coingecko.com/api/v3/global`,
             {
                 headers: {
-                    'X-CMC_PRO_API_KEY': process.env.GECKO_API
+                    'x-access-token': process.env.GECKO_API
                 }
             }
         );
@@ -124,7 +103,7 @@ router.get('/search', async (req, res) => {
             `https://api.coinranking.com/v2/search-suggestions?query=${searchResult}`,
             {
                 headers: {
-                    'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
+                    'x-access-token': process.env.CRYPTO_API
                 }
             }
         );
@@ -190,6 +169,17 @@ router.get('/getFavorite', checkUser, async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+router.get('/sprakline', async (req, res) => {
+    // const currency = "Bitcoin"
+    // const timePeriod = "7d"
+    try {
+        const result = await sparkLine("eth", "7d")
+        res.status(200).json({ result });
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+})
 const getFavorite = async element => {
     console.log(element.currency);
     try {
@@ -197,27 +187,27 @@ const getFavorite = async element => {
             `https://api.coinranking.com/v2/coins?search=${element.currency}`,
             {
                 headers: {
-                    'X-CMC_PRO_API_KEY': process.env.CRYPTO_API
+                    'x-access-token': process.env.CRYPTO_API
                 }
             }
         );
         const firstSuggestion = response.data.data.coins[0];
-        //console.log(firstSuggestion);
-        const coinDetails = [firstSuggestion].map(coin => ({
-            name: coin.name,
-            price: coin.price,
-            marketCap: coin.marketCap,
-            rank: coin.rank,
-            iconUrl: coin.iconUrl,
-            symbol: coin.symbol,
-            //sparkLine: coin.sparkline,
-            trend1h: sparkLine(coin.sparkline, '1h'),
-            trend24h: sparkLine(coin.sparkline, '24h'),
-            trend7d: sparkLine(coin.sparkline, '7d'),
-            trend1y: sparkLine(coin.sparkline, '1y')
-        }));
-        // console.log(coinDetails);
-        return coinDetails;
+
+        const coinDetails = await Promise.all(
+            [firstSuggestion].map(async (coin) => ({
+                name: coin.name,
+                price: coin.price,
+                marketCap: coin.marketCap,
+                rank: coin.rank,
+                iconUrl: coin.iconUrl,
+                symbol: coin.symbol,
+                trend1h: await sparkLine(coin.name, '1h'),
+                trend24h: await sparkLine(coin.name, '24h'),
+                trend7d: await sparkLine(coin.name, '7d'),
+            }))
+        );
+
+        return coinDetails; 
     } catch (error) {
         console.log(error);
     }
