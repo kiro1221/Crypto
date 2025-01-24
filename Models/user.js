@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
             minlength: 3,
             maxlength: 25
         },
+        favCurrency: {
+            type: String,
+            match: /^[a-zA-Z\s]+$/
+        },
         email: {
             type: String,
             unique: true,

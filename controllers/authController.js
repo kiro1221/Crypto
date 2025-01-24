@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const { handleErrors } = require('../handleErrors');
 const { checkUser } = require('../middleware/authMiddleware');
-
 const jwt = require('jsonwebtoken');
 const sessionLength = 5 * 24 * 60 * 60; //3 days
 const createToken = id => {
@@ -71,7 +70,7 @@ router.get('/user', checkUser, async (req, res) => {
         if (!user) {
             return res.status(200).json(null);
         }
-        res.status(200).json(user);
+        res.status(200).json(user.username);
     } catch (err) {
         console.error('Error in user route:', err.message);
         const errors = handleErrors(err) || {

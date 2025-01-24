@@ -20,6 +20,10 @@
             <li class="settings" onmouseover="showHoverMenu()" onmouseout="hideHoverMenu()">
                 Settings
                 <div class="hoverMenu">
+                    <div class="userInfo">
+                        Hi, <span id="name"></span>
+                    </div>
+                    <hr style="border-color: rgb(111, 111, 111); width: 90%; margin: 0 auto;">
                     <a href="#">Theme</a>
                     <a href="#">Currency</a>
                     <a href="#">Change password</a>
@@ -58,5 +62,18 @@
             console.log(error)
         }
     }
-
+    const getName = async () => {
+        const name = document.getElementById("name")
+        try {
+            const response = await fetch('/authentication/user', {
+                method: 'GET',
+            })
+            const username = await response.json()
+            name.textContent = username
+            console.log(username)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    getName()
 </script>
