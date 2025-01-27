@@ -58,7 +58,7 @@
                 body: JSON.stringify({ username: usernameValue, email: emailValue, password: passwordValue, favCurrency: favCurrencyValue }),
             });
             const result = await res.json();
-            if (result) {
+            if (result.status === 'success') {
                 location.assign('/render/');
             }
         } catch (err) {

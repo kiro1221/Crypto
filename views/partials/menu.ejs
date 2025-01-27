@@ -25,15 +25,16 @@
                     </div>
                     <hr style="border-color: rgb(111, 111, 111); width: 90%; margin: 0 auto;">
                     <a href="#">Theme</a>
-                    <a href="#">Currency</a>
-                    <a href="#">Change password</a>
+                    <a href="#" onclick="showCurrency()">Currency</a>
+                    <a href="/render/forgotPassword">Change password</a>
                     <button href="#" onclick="logout()">Logout</button>
                 </div>
             </li>
         </ul>
     </div>
     <div class="popup" id="currencyPopup">
-        <h2>Choose a currency</h2>
+        <button onclick="closeCurrency()" id="popupClose">X</button><br>
+        <h3>Choose a currency</h3>
         <select id="currency-dropdownPopup">
             <option value="USD">United States - USD</option>
             <option value="CAD">Canada - CAD</option>
@@ -42,25 +43,50 @@
         <button onclick="submitCurrency()" class="submitBtn">Submit</button>
     </div>
 </body>
+
 </html>
 <script>
     function showHoverMenu() {
         const hoverMenu = document.querySelector('.settings .hoverMenu');
         hoverMenu.style.display = 'block';
     }
-
     function hideHoverMenu() {
         const hoverMenu = document.querySelector('.settings .hoverMenu');
         hoverMenu.style.display = 'none';
+    }
+    function showCurrency() {
+        document.getElementById('currencyPopup').style.display = 'block';
+        hideHoverMenu()         
+    }
+    function closeCurrency() {
+        document.getElementById('currencyPopup').style.display = 'none';
+    }
+    const submitCurrency = async () => {
+        const hoverMenu = document.querySelector('.settings .hoverMenu');
+        const currencyValue = document.getElementById('currency-dropdownPopup').value
+
+        try {
+            const response = await fetch('/crypto/updateCurrency', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currency: currencyValue
+                })
+            })
+            document.getElementById('currencyPopup').style.display = 'none';
+            location.reload()
+        } catch (error) {
+            console.log(error)
+        }
     }
     const logout = async () => {
         try {
             const response = await fetch('/authentication/logout', {
                 method: 'POST'
             })
-            if (response.status === 201) {
-                location.assign('/render/login');
-            }
+
         } catch (error) {
             console.log(error)
         }

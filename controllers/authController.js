@@ -40,7 +40,8 @@ router.post('/register', async (req, res) => {
             httpOnly: true,
             maxAge: sessionLength * 1000
         });
-        res.status(201).json(user);
+        res.status(201).json({user, 
+            status: 'success'});
     } catch (err) {
         const errors = handleErrors(err);
         res.status(400).json({ errors });
@@ -58,7 +59,8 @@ router.post('/login', async (req, res) => {
         res.status(201).json({
             user: user._id,
             token: token,
-            username: user.username
+            username: user.username,
+            status: 'success'
         });
     } catch (err) {
         const errors = handleErrors(err);
@@ -75,7 +77,7 @@ router.get('/user', checkUser, async (req, res) => {
         if (!user) {
             return res.status(200).json(null);
         }
-        res.status(200).json(user.username);
+        res.status(201).json(user.username);
     } catch (err) {
         console.error('Error in user route:', err.message);
         const errors = handleErrors(err) || {
@@ -103,7 +105,8 @@ router.post('/change-password', checkUser, async (req, res) => {
         }
         user.password = newPassword;
         await user.save();
-        res.status(200).json({ message: 'Password updated successfully' });
+        res.status(201).json({ message: 'Password updated successfully', 
+            status: 'success' });
     } catch (error) {
         const errors = handleErrors(error);
         res.status(400).json({ errors });

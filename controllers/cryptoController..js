@@ -174,5 +174,18 @@ router.get('/exchange', async (req, res) => {
     }
 });
 
-
+router.put('/updateCurrency', checkUser, async (req, res) => {
+    const { currency } = req.body;
+    const user = res.locals.user;
+    if(!user){
+        res.status(200).json({ status: 'Cant find user' });
+    }
+    try{
+        user.favCurrency = currency;
+        await user.save();
+        res.status(200).json({ status: user });
+    }catch(error){
+        res.status(400).json({ message: error.message });
+    }
+})
 module.exports = router;

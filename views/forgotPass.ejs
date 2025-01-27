@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,41 +9,48 @@
     <style>
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h1 class="opacity">Reset password</h1>
 
         <form id="passwordChangeForm">
+            <input type="password" id="oldPassword" placeholder="Old Password" required>
             <input type="password" id="newPassword" placeholder="New Password" required>
             <input type="password" id="confNewPassword" placeholder="Confirm New Password" required>
             <button type="submit">Reset Password</button>
         </form>
     </div>
-    <script>//TODO:send by email only
+    <script>
+        const oldPasswordInput = document.getElementById('oldPassword');
         const newPasswordInput = document.getElementById('newPassword');
         const confNewPasswordInput = document.getElementById('confNewPassword');
         const form = document.getElementById('passwordChangeForm');
 
         form.addEventListener('submit', async (e) => {
-            e.preventDefault();  
+            e.preventDefault();
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             const newPassword = newPasswordInput.value;
             const confirmPassword = confNewPasswordInput.value;
-
+            const oldPassword = oldPasswordInput.value;
             try {
                 // Send a POST request to change the password
-                const res = await fetch('/auth/forgot-password', {
+                const res = await fetch('/authentication/change-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ newPassword, confirmPassword,token }),
+                    body: JSON.stringify({ newPassword, confirmPassword, oldPassword }),
                 });
                 const result = await res.json();
                 console.log(result);
+                if (result.status === 'success') {
+                    location.assign('/render/login');
+                }
             } catch (err) {
-                console.log("Error:", err); 
+                console.log("Error:", err);
             }
         });
     </script>
 </body>
+
 </html>

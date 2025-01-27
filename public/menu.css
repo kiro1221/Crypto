@@ -140,6 +140,7 @@ text-decoration: underline;
 }
 .popup{
     display: none;
+    width: 300px;
 }
 .popup select{
     width: 100%;
@@ -150,4 +151,13 @@ text-decoration: underline;
 .popup button{
     height: 30px;
     padding: 0px;
+}
+#popupClose{
+    background-color: transparent;
+    color: white;
+    padding: 5px;
+    font-size: 18px;
+    float: right;
+    border: none;
+    cursor: pointer;
 }
