@@ -1,7 +1,18 @@
 
 const axios = require('axios');
+const dotenv = require('dotenv').config();
 
-const getFavorite = async element => {
+const exchangeRate = async(favCurrency) => {
+    try {
+        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_API}/latest/USD`);
+        const { conversion_rates } = response.data
+        return conversion_rates[favCurrency]
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return null
+    }
+}
+const getFavorite = async (element, user) => {
     console.log(element.currency);
     try {
         const response = await axios.get(
@@ -13,12 +24,14 @@ const getFavorite = async element => {
             }
         );
         const firstSuggestion = response.data.data.coins[0];
+        const favCurrency = user.favCurrency
+        const rate = await exchangeRate(favCurrency)
 
         const coinDetails = await Promise.all(
             [firstSuggestion].map(async (coin) => ({
                 name: coin.name,
-                price: coin.price,
-                marketCap: coin.marketCap,
+                price: coin.price * rate,
+                marketCap: coin.marketCap * rate,
                 rank: coin.rank,
                 iconUrl: coin.iconUrl,
                 symbol: coin.symbol,
@@ -51,4 +64,5 @@ const sparkLine = async(currency, timePeriod) => {
     } catch (error) {
 console.log(error)    }
 };
-module.exports = { sparkLine,getFavorite };
+
+module.exports = { sparkLine,getFavorite,exchangeRate };

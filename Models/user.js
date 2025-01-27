@@ -24,8 +24,9 @@ const userSchema = new mongoose.Schema(
             minlength: 3,
             maxlength: 25
         },
-        favCurrency: {
+        favCurrency: {//TODO:MAKE USER HAVE FAV CURRENCY THAT LOADS THE PRICES WITH IT, EXCHANGE API
             type: String,
+            default: 'USD',            
             match: /^[a-zA-Z\s]+$/
         },
         email: {

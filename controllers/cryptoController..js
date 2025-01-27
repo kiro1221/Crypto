@@ -1,16 +1,14 @@
 const express = require('express');
-const dotenv = require('dotenv').config();
 const router = express.Router();
 const axios = require('axios');
 const { checkUser } = require('../middleware/authMiddleware');
-const { sparkLine, getFavorite } = require('../functions');
+const { sparkLine, getFavorite,exchangeRate } = require('../functions');
 const favoriteSchema = require('../Models/portfolio');
 const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
-var fx = require("money");
 
-router.get('/latest', async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+router.get('/latest', checkUser,async (req, res) => {
+    const page = parseInt(req.query.page) || 1;//TODO:OPTOMIZE BY LOADING THE NEXT PAE IN THE BACKGROUND OVER AND OVER
+    const limit = parseInt(req.query.limit) || 5 ;
 
     try {
         const response = await axios.get(
@@ -25,16 +23,18 @@ router.get('/latest', async (req, res) => {
                 }
             }
         );
-
+        const user = res.locals.user
+        const favCurrency = user.favCurrency
         const { coins } = response.data.data;
         const stats = response.data.data.stats.total;
         const totalPages = Math.ceil(stats / limit);
+        const rate = await exchangeRate(favCurrency)
 
         const coinDetails = await Promise.all(
             coins.map(async (coin) => ({
                 name: coin.name,
-                price: coin.price,
-                marketCap: coin.marketCap,
+                price: coin.price * rate,
+                marketCap: coin.marketCap * rate,
                 rank: coin.rank,
                 iconUrl: coin.iconUrl,
                 symbol: coin.symbol,
@@ -43,9 +43,9 @@ router.get('/latest', async (req, res) => {
                 trend7d: await sparkLine(coin.name, '7d'),
             }))
         );
-
         res.status(200).json({
             coins: coinDetails,
+            //coins,
             pagination: {
                 currentPage: page,
                 totalPages,
@@ -57,7 +57,8 @@ router.get('/latest', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-router.get('/marketCap', async (req, res) => {
+
+router.get('/marketCap', checkUser,async (req, res) => {
     try {
         const response = await axios.get(
             `https://api.coingecko.com/api/v3/global`,
@@ -67,7 +68,10 @@ router.get('/marketCap', async (req, res) => {
                 }
             }
         );
-        const marketCap = response.data.data.total_market_cap.usd;
+        const user = res.locals.user
+        const favCurrency = user.favCurrency
+        const result = favCurrency.toLowerCase()
+        const marketCap = response.data.data.total_market_cap[result]
         res.status(200).json({
             marketCap
         });
@@ -75,6 +79,7 @@ router.get('/marketCap', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
 router.get('/search', async (req, res) => {
     const { searchResult } = req.body;
     try {
@@ -133,8 +138,9 @@ router.get('/getFavorite', checkUser, async (req, res) => {
         if (user.favorites.length === 0) {
             res.status(400).json({ message: 'No favorite currency yet' });
         } else {
+            const user = res.locals.user;
             const favoritesDetails = await Promise.all(
-                user.favorites.map(element => getFavorite(element))
+                user.favorites.map(element => getFavorite(element, user))
             );
             const validFavorites = favoritesDetails.filter(
                 details => details !== null
@@ -154,4 +160,19 @@ router.get('/sprakline', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 })
+
+router.get('/exchange', async (req, res) => {
+    try {
+        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_API}/latest/USD`);
+        const { conversion_rates } = response.data
+        
+        console.log('Response Data:',conversion_rates.CAD);
+        res.status(200).json({ response: conversion_rates });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).json({ message: 'Failed to fetch exchange rates', error: error.message });
+    }
+});
+
+
 module.exports = router;

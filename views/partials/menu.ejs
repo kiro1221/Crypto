@@ -21,20 +21,27 @@
                 Settings
                 <div class="hoverMenu">
                     <div class="userInfo">
-                        Hi, <span id="name"></span>
+                        👋 Hi, <span id="name"></span>
                     </div>
                     <hr style="border-color: rgb(111, 111, 111); width: 90%; margin: 0 auto;">
                     <a href="#">Theme</a>
                     <a href="#">Currency</a>
                     <a href="#">Change password</a>
-                    <a href="#" onclick="logout()">Logout</a>
+                    <button href="#" onclick="logout()">Logout</button>
                 </div>
             </li>
         </ul>
     </div>
-
+    <div class="popup" id="currencyPopup">
+        <h2>Choose a currency</h2>
+        <select id="currency-dropdownPopup">
+            <option value="USD">United States - USD</option>
+            <option value="CAD">Canada - CAD</option>
+            <option value="EUR">Euro - EUR</option>
+        </select><br>
+        <button onclick="submitCurrency()" class="submitBtn">Submit</button>
+    </div>
 </body>
-
 </html>
 <script>
     function showHoverMenu() {
@@ -46,7 +53,18 @@
         const hoverMenu = document.querySelector('.settings .hoverMenu');
         hoverMenu.style.display = 'none';
     }
-
+    const logout = async () => {
+        try {
+            const response = await fetch('/authentication/logout', {
+                method: 'POST'
+            })
+            if (response.status === 201) {
+                location.assign('/render/login');
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const getMarketCap = async () => {
         let marketCapAll = document.getElementById("marketCapAll")
         try {

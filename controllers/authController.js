@@ -22,19 +22,24 @@ router.get('/hello', async (req, res) => {
 });
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password, confirmPassword } = req.body;
+        const { username, email, password, confirmPassword, favCurrency } = req.body;
         console.log('Request Body:', req.body);
 
         if (confirmPassword && password !== confirmPassword) {
             throw Error('Passwords do not match');
         }
-        const user = new User({ username, email, password });
+        const user = new User({ username, email, password,favCurrency });
         await user.save();
         console.log('User saved:', user);
-
         if (!user) {
             res.status(404).json({ message: 'Error creating user' });
         }
+        const loginUser = await User.login(username, password);
+        const token = createToken(loginUser._id);
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: sessionLength * 1000
+        });
         res.status(201).json(user);
     } catch (err) {
         const errors = handleErrors(err);
