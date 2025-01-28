@@ -173,7 +173,17 @@ router.get('/exchange', async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch exchange rates', error: error.message });
     }
 });
-
+router.get('/getCurrency', checkUser, async (req, res) => {
+    const user = res.locals.user;
+    if(!user){ 
+        res.status(200).json({ status: 'Cant find user' });
+    }
+    try{
+        res.status(200).json({ status: user.favCurrency });
+    }catch(error){
+        res.status(400).json({ message: error.message });
+    }
+})
 router.put('/updateCurrency', checkUser, async (req, res) => {
     const { currency } = req.body;
     const user = res.locals.user;

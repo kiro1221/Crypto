@@ -25,7 +25,7 @@
                     </div>
                     <hr style="border-color: rgb(111, 111, 111); width: 90%; margin: 0 auto;">
                     <a href="#">Theme</a>
-                    <a href="#" onclick="showCurrency()">Currency</a>
+                    <a href="#" onclick="showCurrency()" >Currency<span class="currencySpan" id="currency">CAD</span></a>
                     <a href="/render/forgotPassword">Change password</a>
                     <button href="#" onclick="logout()">Logout</button>
                 </div>
@@ -120,4 +120,17 @@
         }
     }
     getName()
+    const getCurrency = async() =>{
+        const currency = document.getElementById('currency')
+        try{
+            const response = await fetch('/crypto/getCurrency', {
+                method: 'GET'
+            })  
+            const data = await response.json()
+            currency.textContent = `${data.status}`
+        }catch(error){
+            console.log(error)
+        }
+    }
+    getCurrency()
 </script>
