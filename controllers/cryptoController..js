@@ -3,13 +3,11 @@ const router = express.Router();
 const axios = require('axios');
 const { checkUser } = require('../middleware/authMiddleware');
 const { sparkLine, getFavorite,exchangeRate } = require('../functions');
-const favoriteSchema = require('../Models/portfolio');
 const User = require('/Users/kiroragai/Desktop/Code/JS/Crypto/Models/user');
 
 router.get('/latest', checkUser,async (req, res) => {
     const page = parseInt(req.query.page) || 1;//TODO:OPTOMIZE BY LOADING THE NEXT PAE IN THE BACKGROUND OVER AND OVER
     const limit = parseInt(req.query.limit) || 5 ;
-
     try {
         const response = await axios.get(
             `https://api.coinranking.com/v2/coins`,

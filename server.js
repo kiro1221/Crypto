@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const port = process.env.PORT || 9000;
 const app = express();
 const authController = require('./controllers/authController');
+const tradeController = require('./controllers/tradeController');
 const crypto = require('./controllers/cryptoController.');
 const render = require('./controllers/renderController');
 
@@ -15,6 +16,7 @@ app.set("view engine", "ejs");
 app.use('/authentication', authController);
 app.use('/crypto', crypto);
 app.use('/render', render);
+app.use('/trade', tradeController);
 
 const connectDB = url => {
     return mongoose.connect(url);

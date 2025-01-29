@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-const Favorite = require('../Models/portfolio')
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
-
 const userSchema = new mongoose.Schema(
     {
         username: {
@@ -24,7 +22,18 @@ const userSchema = new mongoose.Schema(
             minlength: 3,
             maxlength: 25
         },
-        favCurrency: {//TODO:MAKE USER HAVE FAV CURRENCY THAT LOADS THE PRICES WITH IT, EXCHANGE API
+        dollarAmount: {
+            type: Number,
+            default: 1000000,
+            currencyType: {
+                type: String,
+                default: function() {
+                    return this.favCurrency;
+                }
+            },
+            min: 0
+        },
+        favCurrency: {
             type: String,
             default: 'USD',            
             match: /^[a-zA-Z\s]+$/

@@ -62,8 +62,6 @@ body {
     z-index: -1; 
 }
 
-
-
 .cryptoMenu,
 .cryptoData {
     display: grid;
@@ -116,7 +114,6 @@ body {
     font-weight: 500;
 }
 
-/* Crypto Name */
 .cryptoName {
     display: flex;
     align-items: center;
