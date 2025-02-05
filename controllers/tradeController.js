@@ -28,7 +28,7 @@ router.post('/buy', requireAuth, checkUser, async (req, res) => {
                 if (existingCurrency) {
                     await Portfolio.updateOne(
                         { userId, portfolioName, "portfolioArray.currency": newCurrency.currency },
-                        { $inc: { "portfolioArray.$.totalCoin": newCurrency.totalCoin } }
+                        { $inc: { "portfolioArray.$.totalCoin": newCurrency.totalCoin } }//$inc: increase
                     );
                 } else {
                     await Portfolio.updateOne(
